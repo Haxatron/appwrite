@@ -662,6 +662,10 @@ App::post('/v1/projects/:projectId/webhooks')
         if (empty($project->getId()) || Database::SYSTEM_COLLECTION_PROJECTS != $project->getCollection()) {
             throw new Exception('Project not found', 404);
         }
+        
+        if (!in_array(parse_url($url)["scheme"], ["http", "https"])) {
+            throw new Exception('Invalid protocol used for URL', 404);
+        }
 
         $security = ($security === '1' || $security === 'true' || $security === 1 || $security === true);
 
@@ -791,6 +795,10 @@ App::put('/v1/projects/:projectId/webhooks/:webhookId')
             throw new Exception('Project not found', 404);
         }
 
+        if (!in_array(parse_url($url)["scheme"], ["http", "https"])) {
+            throw new Exception('Invalid protocol used for URL', 404);
+        }
+        
         $security = ($security === '1' || $security === 'true' || $security === 1 || $security === true);
 
         $webhook = $project->search('$id', $webhookId, $project->getAttribute('webhooks', []));
@@ -1081,6 +1089,10 @@ App::post('/v1/projects/:projectId/tasks')
         if (empty($project->getId()) || Database::SYSTEM_COLLECTION_PROJECTS != $project->getCollection()) {
             throw new Exception('Project not found', 404);
         }
+        
+        if (!in_array(parse_url($httpUrl)["scheme"], ["http", "https"])) {
+            throw new Exception('Invalid protocol used for URL', 404);
+        }
 
         $cron = new CronExpression($schedule);
         $next = ($status == 'play') ? $cron->getNextRunDate()->format('U') : null;
@@ -1229,6 +1241,10 @@ App::put('/v1/projects/:projectId/tasks/:taskId')
             throw new Exception('Project not found', 404);
         }
 
+        if (!in_array(parse_url($httpUrl)["scheme"], ["http", "https"])) {
+            throw new Exception('Invalid protocol used for URL', 404);
+        }
+        
         $task = $project->search('$id', $taskId, $project->getAttribute('tasks', []));
 
         if (empty($task) || !$task instanceof Document) {
